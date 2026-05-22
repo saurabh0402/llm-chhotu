@@ -5,16 +5,17 @@
  * @format
  */
 
-import { StatusBar, StyleSheet, Text, useColorScheme, View, FlatList } from 'react-native';
 import {
-  SafeAreaProvider,
-} from 'react-native-safe-area-context';
-import {
-  readDir,
-  DocumentDirectoryPath,
-  ExternalStorageDirectoryPath,
-} from '@dr.pogodin/react-native-fs';
+  StatusBar,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
+
+import { ModelDownload } from './src/components';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -28,30 +29,20 @@ function App() {
 }
 
 function AppContent() {
-  const [files, setFiles] = useState<Array<string>>([]);
-  const [curPath, setCurPath] = useState<string>(ExternalStorageDirectoryPath);
-
-  useEffect(() => {
-    readDir(curPath).then((result) => {
-      setFiles(result.map(r => r.path));
-    });
-  }, [curPath]);
-
-  function getNewPath(path: string) {
-    if (path === '..') {
-      const splitted = curPath.split('/');
-      return splitted.slice(0, splitted.length - 1).join('/');
-    }
-
-    return path;
-  }
+  const [modelPath, setModelPath] = useState<string>('');
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={['..'].concat(files)}
-        renderItem={({item}) => <Text style={styles.fileItem} onPress={() => setCurPath(getNewPath(item))}>{item}</Text>}
-      />
+      {
+        <View style={styles.downloadContainer}>
+          <ModelDownload setModelPath={setModelPath} />
+        </View>
+      }
+      {modelPath && (
+        <Text style={styles.fileItem}>
+          Wohooo! Model Downloaded - {modelPath}
+        </Text>
+      )}
     </View>
   );
 }
@@ -59,14 +50,18 @@ function AppContent() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: StatusBar.currentHeight,
+    paddingTop: Number(StatusBar.currentHeight) + 20,
     paddingHorizontal: 20,
+  },
+  downloadContainer: {
+    height: 200,
+    padding: 10,
   },
   fileItem: {
     color: 'white',
     fontSize: 16,
     marginVertical: 8,
-  }
+  },
 });
 
 export default App;
