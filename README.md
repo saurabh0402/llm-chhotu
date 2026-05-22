@@ -21,4 +21,5 @@ LLM Chhotu is your own LLM, running locally in your mobile phone - one you can t
   - [Gemma 4 E2B](https://huggingface.co/unsloth/gemma-4-E2B-it-GGUF?show_file_info=gemma-4-E2B-it-UD-IQ2_M.gguf)
 - [react-native-fs](https://www.npmjs.com/package/@dr.pogodin/react-native-fs#downloadfileoptionst)
 - [react-native-progress](https://www.npmjs.com/package/react-native-progress)
+- [react-native-background-downloader](https://github.com/kesha-antonov/react-native-background-downloader)
 - [react-native-gifted-chat](https://github.com/faridsafi/react-native-gifted-chat)
