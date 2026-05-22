@@ -6,6 +6,11 @@ import {
   unlink,
 } from '@dr.pogodin/react-native-fs';
 
+import {
+  createDownloadTask,
+  getExistingDownloadTasks,
+} from '@kesha-antonov/react-native-background-downloader';
+
 const MODEL_NAME_TO_HUGGINGFACE_MAPPER: Record<string, string> = {
   gemma4: 'unsloth/gemma-4-E2B-it-GGUF',
 };
@@ -30,21 +35,30 @@ export function getModel(
         unlink(modelFilePath).then(() => {});
       }
 
-      const { promise } = downloadFile({
-        fromUrl: modelUrl,
-        toFile: modelFilePath,
-        progress: ({ contentLength, bytesWritten }) => {
-          onProgress(bytesWritten / contentLength);
-        },
-      });
+      getExistingDownloadTasks().then(tasks => {
+        let task = tasks[0];
 
-      promise
-        .then(res =>
-          res.statusCode === 200
-            ? onDone(modelFilePath)
-            : onError('Failed to Download'),
-        )
-        .catch(err => onError(err.message || 'Failed to Download'));
+        if (!task) {
+          task = createDownloadTask({
+            url: modelUrl,
+            destination: modelFilePath,
+            id: modelName,
+          });
+        }
+
+        task
+          .progress(({ bytesDownloaded, bytesTotal }) => {
+            onProgress(bytesDownloaded / bytesTotal);
+          })
+          .done(() => {
+            onDone(modelFilePath);
+          })
+          .error(err => {
+            onError(err.error || 'Failed to Download model');
+          });
+
+        task.start();
+      });
     });
   });
 }
