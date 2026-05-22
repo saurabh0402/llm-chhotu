@@ -16,6 +16,9 @@ LLM Chhotu is your own LLM, running locally in your mobile phone - one you can t
 - [llama.rn](https://github.com/mybigday/llama.rn)
 - [EdgeLLM](https://github.com/MekkCyber/EdgeLLM/tree/main)
 - [LLM Inference on Edge](https://huggingface.co/blog/llm-inference-on-edge)
-- [Gemma Quantised, HuggingFace](https://huggingface.co/unsloth/gemma-4-E4B-it-GGUF?show_file_info=gemma-4-E4B-it-UD-IQ3_XXS.gguf)
+- Gemma Quantised, HuggingFace
+  - [Gemma 4 E4B](https://huggingface.co/unsloth/gemma-4-E4B-it-GGUF?show_file_info=gemma-4-E4B-it-UD-IQ3_XXS.gguf)
+  - [Gemma 4 E2B](https://huggingface.co/unsloth/gemma-4-E2B-it-GGUF?show_file_info=gemma-4-E2B-it-UD-IQ2_M.gguf)
 - [react-native-fs](https://www.npmjs.com/package/@dr.pogodin/react-native-fs#downloadfileoptionst)
 - [react-native-progress](https://www.npmjs.com/package/react-native-progress)
+- [react-native-gifted-chat](https://github.com/faridsafi/react-native-gifted-chat)
