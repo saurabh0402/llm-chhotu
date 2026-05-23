@@ -29,6 +29,7 @@ LLM Chhotu is your own LLM, running locally in your mobile phone - one you can t
 - [react-native-background-downloader](https://github.com/kesha-antonov/react-native-background-downloader)
 - [react-native-gifted-chat](https://github.com/faridsafi/react-native-gifted-chat)
 - [Notifee](https://notifee.app/)
+- [React Native Animated](https://docs.swmansion.com/react-native-reanimated/docs/fundamentals/getting-started/)
 
 ## Future Exploration
 - [ExecuTorch](https://docs.swmansion.com/react-native-executorch/)
