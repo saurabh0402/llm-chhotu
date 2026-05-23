@@ -25,3 +25,8 @@
 
 ## Changing App Name
 - Update the value of the `string` tag with name attribute `app_name` in `android/app/src/main/res/values/string.xml`.
+
+## View Logs
+```bash
+adb logcat '*:S' ReactNative:V ReactNativeJS:V
+```

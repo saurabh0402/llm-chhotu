@@ -15,7 +15,8 @@ import {
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
 
-import { ModelDownload } from './src/components';
+import { ModelDownload, Chat } from './src/components';
+import { initApp } from './src/helpers';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -29,20 +30,26 @@ function App() {
 }
 
 function AppContent() {
-  const [modelPath, setModelPath] = useState<string>('');
+  const [modelName] = useState('gemma4');
+  const [modelPath, setModelPath] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function init() {
+      const modelPath = await initApp(modelName);
+      setModelPath(modelPath);
+    }
+
+    init();
+  }, [modelName]);
 
   return (
     <View style={styles.container}>
       {
         <View style={styles.downloadContainer}>
-          <ModelDownload setModelPath={setModelPath} />
+          <ModelDownload setModelPath={setModelPath} modelName={modelName} />
         </View>
       }
-      {modelPath && (
-        <Text style={styles.fileItem}>
-          Wohooo! Model Downloaded - {modelPath}
-        </Text>
-      )}
+      {modelPath && <Chat modelPath={modelPath} />}
     </View>
   );
 }
@@ -56,11 +63,6 @@ const styles = StyleSheet.create({
   downloadContainer: {
     height: 200,
     padding: 10,
-  },
-  fileItem: {
-    color: 'white',
-    fontSize: 16,
-    marginVertical: 8,
   },
 });
 

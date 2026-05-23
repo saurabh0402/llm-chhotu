@@ -6,9 +6,10 @@ import { getModel } from '../helpers';
 
 type ModelDownloadProps = {
   setModelPath: (path: string) => void;
+  modelName: string;
 };
 
-export function ModelDownload({ setModelPath }: ModelDownloadProps) {
+export function ModelDownload({ setModelPath, modelName }: ModelDownloadProps) {
   const [progress, setProgress] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
   const [downloading, setDownloading] = useState(false);
@@ -17,7 +18,7 @@ export function ModelDownload({ setModelPath }: ModelDownloadProps) {
     setDownloading(true);
 
     getModel(
-      'gemma4',
+      modelName,
       setProgress,
       data => {
         setModelPath(data);
