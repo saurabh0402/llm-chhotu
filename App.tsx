@@ -45,11 +45,13 @@ function AppContent() {
   return (
     <View style={styles.container}>
       {
-        <View style={styles.downloadContainer}>
-          <ModelDownload setModelPath={setModelPath} modelName={modelName} />
-        </View>
+        <ModelDownload
+          modelPath={modelPath}
+          setModelPath={setModelPath}
+          modelName={modelName}
+        />
       }
-      {modelPath && <Chat modelPath={modelPath} />}
+      {modelPath && <Chat modelPath={modelPath} setModelPath={setModelPath} />}
     </View>
   );
 }
@@ -57,12 +59,7 @@ function AppContent() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: Number(StatusBar.currentHeight) + 20,
-    paddingHorizontal: 20,
-  },
-  downloadContainer: {
-    height: 200,
-    padding: 10,
+    paddingTop: Number(StatusBar.currentHeight),
   },
 });
 

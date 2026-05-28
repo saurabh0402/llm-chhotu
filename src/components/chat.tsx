@@ -6,18 +6,23 @@ import { initModel, runCompletion } from '../helpers';
 
 type ChatProps = {
   modelPath: string;
+  setModelPath: (path: string | null) => void;
 };
 
-export function Chat({ modelPath }: ChatProps) {
+export function Chat({ modelPath, setModelPath }: ChatProps) {
   const [llmContext, setLlmContext] = useState<LlamaContext | null>(null);
   const [modelReady, setModelReady] = useState(false);
   const [llmData, setLlmData] = useState('');
 
   useEffect(() => {
     async function init() {
-      const context = await initModel(modelPath);
-      setLlmContext(context);
-      setModelReady(true);
+      try {
+        const context = await initModel(modelPath);
+        setLlmContext(context);
+        setModelReady(true);
+      } catch (err) {
+        setModelPath(null);
+      }
     }
 
     init();
