@@ -12,17 +12,24 @@ import { LlamaContext } from 'llama.rn';
 
 import { initModel, runCompletion } from '../helpers';
 import { useBehavior } from '../hooks';
+import { MessageRenderer } from '.';
 
 type ChatProps = {
   modelPath: string;
   setModelPath: (path: string | null) => void;
 };
 
+type Message = {
+  content: string;
+  sender: 'user' | 'bot';
+};
+
 export function Chat({ modelPath, setModelPath }: ChatProps) {
   const [llmContext, setLlmContext] = useState<LlamaContext | null>(null);
   const [modelReady, setModelReady] = useState(false);
-  const [llmData, setLlmData] = useState('');
-
+  const [messages, setMessages] = useState<Array<Message>>([]);
+  const [curInput, setCurInput] = useState('');
+  const [modelInProgress, setModelInProgress] = useState(false);
   const behavior = useBehavior();
 
   useEffect(() => {
@@ -39,19 +46,42 @@ export function Chat({ modelPath, setModelPath }: ChatProps) {
     init();
   }, []);
 
-  // useEffect(() => {
-  //   if (!llmContext) {
-  //     return;
-  //   }
+  function sendMessage() {
+    if (!llmContext) {
+      return;
+    }
 
-  //   runCompletion(
-  //     llmContext,
-  //     token => {
-  //       setLlmData(data => data + token);
-  //     },
-  //     () => {},
-  //   );
-  // }, [llmContext]);
+    const userPrompt = curInput;
+    setMessages(existingMessages => {
+      return [
+        {
+          content: '',
+          sender: 'bot' as const,
+        },
+        {
+          content: userPrompt,
+          sender: 'user' as const,
+        },
+      ].concat(existingMessages);
+    });
+    setCurInput('');
+    setModelInProgress(true);
+
+    runCompletion(
+      llmContext,
+      userPrompt,
+      token => {
+        setMessages(existingMessages => {
+          const newMessages = [...existingMessages];
+          newMessages[0].content = newMessages[0].content + token;
+          return newMessages;
+        });
+      },
+      () => {
+        setModelInProgress(false);
+      },
+    );
+  }
 
   if (!modelReady) {
     return <Text style={styles.text}>Loading Model...</Text>;
@@ -64,24 +94,27 @@ export function Chat({ modelPath, setModelPath }: ChatProps) {
       behavior={behavior}
     >
       <FlatList
-        data={[
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since 1966, when designers at Letraset and James Moseley, the librarian at St Bride Printing Library, took a 1914 Cicero translation and scrambled it to make dummy text for Letraset's Body Type sheets. It has survived not only many decades, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised thanks to these sheets and more recently with desktop publishing software including versions of Lorem Ipsum.",
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since 1966, when designers at Letraset and James Moseley, the librarian at St Bride Printing Library, took a 1914 Cicero translation and scrambled it to make dummy text for Letraset's Body Type sheets. It has survived not only many decades, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised thanks to these sheets and more recently with desktop publishing software including versions of Lorem Ipsum.",
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since 1966, when designers at Letraset and James Moseley, the librarian at St Bride Printing Library, took a 1914 Cicero translation and scrambled it to make dummy text for Letraset's Body Type sheets. It has survived not only many decades, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised thanks to these sheets and more recently with desktop publishing software including versions of Lorem Ipsum.",
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since 1966, when designers at Letraset and James Moseley, the librarian at St Bride Printing Library, took a 1914 Cicero translation and scrambled it to make dummy text for Letraset's Body Type sheets. It has survived not only many decades, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised thanks to these sheets and more recently with desktop publishing software including versions of Lorem Ipsum.",
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since 1966, when designers at Letraset and James Moseley, the librarian at St Bride Printing Library, took a 1914 Cicero translation and scrambled it to make dummy text for Letraset's Body Type sheets. It has survived not only many decades, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised thanks to these sheets and more recently with desktop publishing software including versions of Lorem Ipsum.",
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since 1966, when designers at Letraset and James Moseley, the librarian at St Bride Printing Library, took a 1914 Cicero translation and scrambled it to make dummy text for Letraset's Body Type sheets. It has survived not only many decades, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised thanks to these sheets and more recently with desktop publishing software including versions of Lorem Ipsum.",
-        ]}
+        data={messages}
         renderItem={({ item }) => {
-          return <Text style={{ color: 'white' }}>{item}</Text>;
+          return <MessageRenderer {...item} />;
         }}
         style={styles.messagesContainer}
         inverted
       />
       <View style={styles.inputContainer}>
-        <TextInput style={styles.input} multiline={true} />
+        <TextInput
+          style={styles.input}
+          multiline={true}
+          value={curInput}
+          onChangeText={setCurInput}
+        />
         <View style={styles.buttonsContainer}>
-          <Button title="➤" color="#32669a" />
+          <Button
+            title="➤"
+            color="#32669a"
+            onPress={sendMessage}
+            disabled={modelInProgress}
+          />
         </View>
       </View>
     </KeyboardAvoidingView>

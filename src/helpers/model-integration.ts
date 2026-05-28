@@ -23,11 +23,10 @@ export function initModel(modelPath: string) {
 
 export async function runCompletion(
   model: LlamaContext,
+  userPrompt: string,
   onNextTokens: (token: string) => void,
   onDone: () => void,
 ) {
-  console.log('Running Completion!');
-
   await model.completion(
     {
       messages: [
@@ -38,13 +37,12 @@ export async function runCompletion(
         },
         {
           role: 'user',
-          content: 'hello',
+          content: userPrompt,
         },
       ],
       stop: stopWords,
     },
     data => {
-      console.log(data);
       const { token } = data;
       onNextTokens(token);
     },
