@@ -1,10 +1,4 @@
-import {
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
 
@@ -16,10 +10,7 @@ function App() {
 
   return (
     <SafeAreaProvider>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        translucent={true}
-      />
+      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       <AppContent />
     </SafeAreaProvider>
   );
@@ -47,7 +38,13 @@ function AppContent() {
           modelName={modelName}
         />
       }
-      {modelPath && <Chat modelPath={modelPath} setModelPath={setModelPath} />}
+      {modelPath && (
+        <Chat
+          modelPath={modelPath}
+          setModelPath={setModelPath}
+          modelName={modelName}
+        />
+      )}
     </View>
   );
 }

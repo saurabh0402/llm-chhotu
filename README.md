@@ -1,5 +1,5 @@
 # LLM Chhotu
-![LLM Chhotu](./icons/main.png)
+<img src="./icons/main.png" width="300">
 
 LLM Chhotu is your own LLM, running locally in your mobile phone - one you can talk to while being offline and get it to do actions for you.
 
@@ -8,7 +8,7 @@ LLM Chhotu is your own LLM, running locally in your mobile phone - one you can t
 - [x] Learn React Native and setup a simple UI
 - [x] Add Gemma
 - [x] Add simple chatting with LLM
-- [ ] Message parsing to segragate reasoning
+- [x] Message parsing to segragate reasoning
 - [ ] Pass context to LLM
 - [ ] Add some tools
 - [ ] Add image support

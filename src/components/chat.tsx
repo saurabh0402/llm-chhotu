@@ -10,27 +10,36 @@ import {
 import { useEffect, useState } from 'react';
 import { LlamaContext } from 'llama.rn';
 
-import { initModel, runCompletion, stopCompletion } from '../helpers';
+import {
+  initModel,
+  runCompletion,
+  stopCompletion,
+  getMessageParser,
+} from '../helpers';
 import { useBehavior } from '../hooks';
 import { MessageRenderer, FullScreenLoader } from '.';
 
 type ChatProps = {
   modelPath: string;
   setModelPath: (path: string | null) => void;
+  modelName: string;
 };
 
 type Message = {
   content: string;
   sender: 'user' | 'bot';
+  thinkingInProgress: boolean;
+  thinkingMsg: string;
 };
 
-export function Chat({ modelPath, setModelPath }: ChatProps) {
+export function Chat({ modelPath, setModelPath, modelName }: ChatProps) {
   const [llmContext, setLlmContext] = useState<LlamaContext | null>(null);
   const [modelReady, setModelReady] = useState(false);
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [curInput, setCurInput] = useState('');
   const [modelInProgress, setModelInProgress] = useState(false);
   const behavior = useBehavior();
+  const parser = getMessageParser(modelName);
 
   useEffect(() => {
     async function init() {
@@ -39,6 +48,7 @@ export function Chat({ modelPath, setModelPath }: ChatProps) {
         setLlmContext(context);
         setModelReady(true);
       } catch (err) {
+        console.log(err);
         setModelPath(null);
       }
     }
@@ -57,10 +67,14 @@ export function Chat({ modelPath, setModelPath }: ChatProps) {
         {
           content: '',
           sender: 'bot' as const,
+          thinkingInProgress: false,
+          thinkingMsg: '',
         },
         {
           content: userPrompt,
           sender: 'user' as const,
+          thinkingInProgress: false,
+          thinkingMsg: '',
         },
       ].concat(existingMessages);
     });
@@ -73,7 +87,23 @@ export function Chat({ modelPath, setModelPath }: ChatProps) {
       token => {
         setMessages(existingMessages => {
           const newMessages = [...existingMessages];
-          newMessages[0].content = newMessages[0].content + token;
+          const lastMessage = newMessages[0];
+          const { toggleThinking, content } = parser(
+            token,
+            lastMessage.content,
+            lastMessage.thinkingMsg,
+          );
+
+          if (toggleThinking) {
+            lastMessage.thinkingInProgress = !lastMessage.thinkingInProgress;
+          }
+
+          if (lastMessage.thinkingInProgress) {
+            lastMessage.thinkingMsg = lastMessage.thinkingMsg + content;
+          } else {
+            lastMessage.content = lastMessage.content + content;
+          }
+
           return newMessages;
         });
       },
