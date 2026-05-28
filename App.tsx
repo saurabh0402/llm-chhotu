@@ -23,7 +23,10 @@ function App() {
 
   return (
     <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+      <StatusBar
+        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+        translucent={true}
+      />
       <AppContent />
     </SafeAreaProvider>
   );
@@ -60,6 +63,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: Number(StatusBar.currentHeight),
+    backgroundColor: '#12273b',
   },
 });
 
