@@ -12,7 +12,7 @@ import { LlamaContext } from 'llama.rn';
 
 import { initModel, runCompletion } from '../helpers';
 import { useBehavior } from '../hooks';
-import { MessageRenderer } from '.';
+import { MessageRenderer, FullScreenLoader } from '.';
 
 type ChatProps = {
   modelPath: string;
@@ -84,7 +84,7 @@ export function Chat({ modelPath, setModelPath }: ChatProps) {
   }
 
   if (!modelReady) {
-    return <Text style={styles.text}>Loading Model...</Text>;
+    return <FullScreenLoader message="Initialising Model" />;
   }
 
   return (
