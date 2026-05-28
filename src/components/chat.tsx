@@ -10,7 +10,7 @@ import {
 import { useEffect, useState } from 'react';
 import { LlamaContext } from 'llama.rn';
 
-import { initModel, runCompletion } from '../helpers';
+import { initModel, runCompletion, stopCompletion } from '../helpers';
 import { useBehavior } from '../hooks';
 import { MessageRenderer, FullScreenLoader } from '.';
 
@@ -83,6 +83,14 @@ export function Chat({ modelPath, setModelPath }: ChatProps) {
     );
   }
 
+  function stopGeneration() {
+    if (!llmContext) {
+      return;
+    }
+
+    stopCompletion(llmContext);
+  }
+
   if (!modelReady) {
     return <FullScreenLoader message="Initialising Model" />;
   }
@@ -107,13 +115,13 @@ export function Chat({ modelPath, setModelPath }: ChatProps) {
           multiline={true}
           value={curInput}
           onChangeText={setCurInput}
+          placeholder="Ask something..."
         />
         <View style={styles.buttonsContainer}>
           <Button
-            title="➤"
+            title={modelInProgress ? '⊘' : '➤'}
             color="#32669a"
-            onPress={sendMessage}
-            disabled={modelInProgress}
+            onPress={modelInProgress ? stopGeneration : sendMessage}
           />
         </View>
       </View>

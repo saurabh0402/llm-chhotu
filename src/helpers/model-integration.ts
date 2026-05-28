@@ -50,3 +50,7 @@ export async function runCompletion(
 
   onDone();
 }
+
+export function stopCompletion(model: LlamaContext) {
+  return model.stopCompletion();
+}
