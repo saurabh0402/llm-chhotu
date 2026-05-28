@@ -8,6 +8,7 @@ LLM Chhotu is your own LLM, running locally in your mobile phone - one you can t
 - [x] Learn React Native and setup a simple UI
 - [x] Add Gemma
 - [x] Add simple chatting with LLM
+- [ ] Message parsing to segragate reasoning
 - [ ] Pass context to LLM
 - [ ] Add some tools
 - [ ] Add image support
