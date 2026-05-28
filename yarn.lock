@@ -1348,6 +1348,16 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
+"@jsamr/counter-style@2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@jsamr/counter-style/-/counter-style-2.0.2.tgz#6f08cfa98e1f0416dc1d7f2d8ac38a8cdb004c5d"
+  integrity sha512-2mXudGVtSzVxWEA7B9jZLKjoXUeUFYDDtFrQoC0IFX9/Dszz4t1vZOmafi3JSw/FxD+udMQ+4TAFR8Qs0J3URQ==
+
+"@jsamr/react-native-li@2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@jsamr/react-native-li/-/react-native-li-2.3.1.tgz#12a5b5f6e3971cec77b96bee58104eed0ae9314a"
+  integrity sha512-Qbo4NEj48SQ4k8FZJHFE2fgZDKTWaUGmVxcIQh3msg5JezLdTMMHuRRDYctfdHI6L0FZGObmEv3haWbIvmol8w==
+
 "@kesha-antonov/react-native-background-downloader@^4.5.4":
   version "4.5.4"
   resolved "https://registry.yarnpkg.com/@kesha-antonov/react-native-background-downloader/-/react-native-background-downloader-4.5.4.tgz#51ba5fbc4a510ad6d3bb3851ccdc3aaef64278f8"
@@ -3636,6 +3646,11 @@ get-symbol-description@^1.1.0:
     es-errors "^1.3.0"
     get-intrinsic "^1.2.6"
 
+github-slugger@2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/github-slugger/-/github-slugger-2.0.0.tgz#52cf2f9279a21eb6c59dd385b410f0c0adda8f1a"
+  integrity sha512-IaOQ9puYtjrkq7Y0Ygl9KDZnrf/aiUJYUpVf89y8kyaxbRG7Y1SrX/jaumrv81vc61+kiMempujsM3Yw7w5qcw==
+
 glob-parent@^5.1.2:
   version "5.1.2"
   resolved "https://registry.yarnpkg.com/glob-parent/-/glob-parent-5.1.2.tgz#869832c58034fe68a4093c17dc15e8340d8401c4"
@@ -3775,6 +3790,11 @@ hermes-parser@^0.25.1:
   integrity sha512-6pEjquH3rqaI6cYAXYPcz9MS4rY6R4ngRgrgfDshRptUZIc3lw0MCIJIGDj9++mfySOuPTHB4nrSW99BCvOPIA==
   dependencies:
     hermes-estree "0.25.1"
+
+html-entities@2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/html-entities/-/html-entities-2.6.0.tgz#7c64f1ea3b36818ccae3d3fb48b6974208e984f8"
+  integrity sha512-kig+rMn/QOVRvr7c86gQ8lWXq+Hkv6CbAH1hLu+RG338StTpE8Z0b44SDVaqVu7HGKf27frdmUYEs9hTUX/cLQ==
 
 html-escaper@^2.0.0:
   version "2.0.2"
@@ -4821,6 +4841,11 @@ makeerror@1.0.12:
   dependencies:
     tmpl "1.0.5"
 
+marked@18.0.3:
+  version "18.0.3"
+  resolved "https://registry.yarnpkg.com/marked/-/marked-18.0.3.tgz#278b5ba89f1c7ccbaf0422f3ee8955928489220b"
+  integrity sha512-7VT90JOkDeaRWpfjOReRGPEKn0ecdARBkDGL+tT1wZY0efPPqkUxLUSmzy/C7TIylQYJC9STISEsCHrqb/7VIA==
+
 marky@^1.2.2:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/marky/-/marky-1.3.0.tgz#422b63b0baf65022f02eda61a238eccdbbc14997"
@@ -5575,12 +5600,30 @@ react-is@^19.2.3:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-19.2.6.tgz#aeee6159b159eb7f520d672cffcc69e7052d288f"
   integrity sha512-XjBR15BhXuylgWGuslhDKqlSayuqvqBX91BP8pauG8kd1zY8kotkNWbXksTCNRarse4kuGbe2kIY05ARtwNIvw==
 
+react-native-marked@^8.1.0:
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-marked/-/react-native-marked-8.1.0.tgz#7428ca7356aa4bee15f35ca17c52cf3b1823bc4b"
+  integrity sha512-nNsA0YZ73EvlZzSODms253gnZBYqxr4j3Qqf38NYAzmdVxULZMHB7qmt8yiYwtdEZ2IsTDxexlHckyhwLfjTlg==
+  dependencies:
+    "@jsamr/counter-style" "2.0.2"
+    "@jsamr/react-native-li" "2.3.1"
+    github-slugger "2.0.0"
+    html-entities "2.6.0"
+    marked "18.0.3"
+    react-native-reanimated-table "0.0.2"
+    svg-parser "2.0.4"
+
 react-native-progress@^5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/react-native-progress/-/react-native-progress-5.0.1.tgz#4e15258b5661c49bad74554352326ca540bb7c58"
   integrity sha512-TYfJ4auAe5vubDma2yfFvt7ktSI+UCfysqJnkdHEcLXqAitRFOozgF/cLgN5VNi/iLdaf3ga1ETi2RF4jVZ/+g==
   dependencies:
     prop-types "^15.7.2"
+
+react-native-reanimated-table@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-reanimated-table/-/react-native-reanimated-table-0.0.2.tgz#015392dbc12fb03fd872d5a7eea9bc84c4f3a685"
+  integrity sha512-OeuqfU1AFEmHNTJlEOLWrV78JgAXnM0/ZrCm0Ab+9e5nwYJ+xab/UFXkNKz3Gyf08ZfLSNzwMQRjt3eZWPWoGA==
 
 react-native-safe-area-context@^5.5.2:
   version "5.8.0"
@@ -6288,6 +6331,11 @@ supports-preserve-symlinks-flag@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz#6eda4bd344a3c94aea376d4cc31bc77311039e09"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
+
+svg-parser@2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/svg-parser/-/svg-parser-2.0.4.tgz#fdc2e29e13951736140b76cb122c8ee6630eb6b5"
+  integrity sha512-e4hG1hRwoOdRb37cIMSgzNsxyzKfayW6VOflrwvR+/bzrkyxY/31WkbgnQpgtrNp1SdpJvpUAGTa/ZoiPNDuRQ==
 
 terser@^5.15.0:
   version "5.47.1"
