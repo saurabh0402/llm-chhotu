@@ -1,4 +1,5 @@
 import { initLlama, LlamaContext } from 'llama.rn';
+import { tools } from './tools';
 
 const stopWords = [
   '</s>',
@@ -21,19 +22,27 @@ export function initModel(modelPath: string) {
   });
 }
 
+const SYSTEM_PROMPT = `
+  You are a helpful assistant called Chhotu. Your task is to respond to user politely and with factually correct information.
+  Whether you reply or think, also use ENGLISH. Do not use any other language.
+
+  - You also have some tools available for you. Whenever needed run a required tool to get the data.
+  - If a tool is available for some usecase, IT MUST BE PREFERRED.
+  - Once you get a tool response, use it to generate the final output or more tool cools.
+`;
+
 export async function runCompletion(
   model: LlamaContext,
   userPrompt: string,
   onNextTokens: (token: string) => void,
   onDone: () => void,
 ) {
-  await model.completion(
+  const { tool_calls } = await model.completion(
     {
       messages: [
         {
           role: 'system',
-          content:
-            'You are a helpful assistant called Chhotu. Your task is to respond to user politely and with factually correct information.',
+          content: SYSTEM_PROMPT,
         },
         {
           role: 'user',
@@ -41,12 +50,16 @@ export async function runCompletion(
         },
       ],
       stop: stopWords,
+      tool_choice: 'auto',
+      tools,
     },
     data => {
       const { token } = data;
       onNextTokens(token);
     },
   );
+
+  console.log(tool_calls);
 
   onDone();
 }
