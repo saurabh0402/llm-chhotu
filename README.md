@@ -41,3 +41,6 @@ LLM Chhotu is your own LLM, running locally in your mobile phone - one you can t
 
 ## Future Exploration
 - [ExecuTorch](https://docs.swmansion.com/react-native-executorch/)
+
+## Gemma
+- [Function calling with Gemma](https://ai.google.dev/gemma/docs/capabilities/text/function-calling-gemma4)
