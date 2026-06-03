@@ -12,7 +12,7 @@ LLM Chhotu is your own LLM, running locally in your mobile phone - one you can t
 - [ ] Pass context to LLM
 - [ ] Add tools support
   - [x] Add a simple tool and check behavior
-  - [ ] Handle tool call loop in `runCompletion`
+  - [x] Handle tool call loop in `runCompletion`
   - [ ] Handle multiple thinking blocks, and tool call in `Chat`
   - [ ] Add an actual, working tool
 - [ ] Add some awesome tools

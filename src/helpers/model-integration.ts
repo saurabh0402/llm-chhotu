@@ -1,5 +1,10 @@
 import { initLlama, LlamaContext } from 'llama.rn';
-import { tools } from './tools';
+import { tools, runTool } from './tools';
+
+type Message = {
+  role: string;
+  content: string;
+};
 
 const stopWords = [
   '</s>',
@@ -29,6 +34,7 @@ const SYSTEM_PROMPT = `
   - You also have some tools available for you. Whenever needed run a required tool to get the data.
   - If a tool is available for some usecase, IT MUST BE PREFERRED.
   - Once you get a tool response, use it to generate the final output or more tool cools.
+  - When a tool call is made, you are provided the response with
 `;
 
 export async function runCompletion(
@@ -37,29 +43,60 @@ export async function runCompletion(
   onNextTokens: (token: string) => void,
   onDone: () => void,
 ) {
-  const { tool_calls } = await model.completion(
+  const messages: Array<Message> = [
     {
-      messages: [
-        {
-          role: 'system',
-          content: SYSTEM_PROMPT,
-        },
-        {
-          role: 'user',
-          content: userPrompt,
-        },
-      ],
-      stop: stopWords,
-      tool_choice: 'auto',
-      tools,
+      role: 'system',
+      content: SYSTEM_PROMPT,
     },
-    data => {
-      const { token } = data;
-      onNextTokens(token);
+    {
+      role: 'user',
+      content: userPrompt,
     },
-  );
+  ];
 
-  console.log(tool_calls);
+  while (true) {
+    const { tool_calls: toolCalls } = await model.completion(
+      {
+        messages,
+        stop: stopWords,
+        tool_choice: 'auto',
+        tools,
+      },
+      data => {
+        const { token } = data;
+        onNextTokens(token);
+      },
+    );
+
+    if (!toolCalls || !toolCalls.length) {
+      break;
+    }
+
+    // Todo: Fix the types
+    const toolRunResponses: {
+      tool_calls: Array<unknown>;
+      tool_responses: Array<unknown>;
+    } = {
+      tool_calls: [],
+      tool_responses: [],
+    };
+
+    for (const toolCall of toolCalls) {
+      const args = JSON.parse(toolCall.function.arguments);
+      const toolResponse = await runTool(toolCall.function.name, args);
+
+      toolRunResponses.tool_calls.push(toolCall);
+      toolRunResponses.tool_responses.push({
+        name: toolCall.function.name,
+        response: toolResponse,
+      });
+    }
+
+    messages.push({
+      role: 'assistant',
+      content: JSON.stringify(toolRunResponses),
+    });
+  }
 
   onDone();
 }
