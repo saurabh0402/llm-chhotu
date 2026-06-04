@@ -30,3 +30,10 @@
 ```bash
 adb logcat '*:S' ReactNative:V ReactNativeJS:V
 ```
+
+# Tools, Tools, Everywhere
+- [duckduckgo search](https://duck-duck-scrape.js.org/)
+- [searxng](https://docs.searxng.org/user/index.html)
+- [react-native linking](https://reactnative.dev/docs/linking)
+- [react-native common intents](https://github.com/wahdatjan/react-native-common-intents/blob/master/src/index.js)
+
