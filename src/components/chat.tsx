@@ -18,18 +18,12 @@ import {
 } from '../helpers';
 import { useBehavior } from '../hooks';
 import { MessageRenderer, FullScreenLoader } from '.';
+import { Message, Text as TextType } from '../types';
 
 type ChatProps = {
   modelPath: string;
   setModelPath: (path: string | null) => void;
   modelName: string;
-};
-
-type Message = {
-  content: string;
-  sender: 'user' | 'bot';
-  thinkingInProgress: boolean;
-  thinkingMsg: string;
 };
 
 export function Chat({ modelPath, setModelPath, modelName }: ChatProps) {
@@ -63,20 +57,23 @@ export function Chat({ modelPath, setModelPath, modelName }: ChatProps) {
 
     const userPrompt = curInput;
     setMessages(existingMessages => {
-      return [
+      const newMessages: Array<Message> = [
         {
-          content: '',
+          content: [] as Array<TextType>,
           sender: 'bot' as const,
-          thinkingInProgress: false,
-          thinkingMsg: '',
         },
         {
-          content: userPrompt,
           sender: 'user' as const,
-          thinkingInProgress: false,
-          thinkingMsg: '',
+          content: [
+            {
+              type: 'message' as const,
+              content: userPrompt,
+            },
+          ],
         },
-      ].concat(existingMessages);
+      ];
+
+      return newMessages.concat(existingMessages);
     });
     setCurInput('');
     setModelInProgress(true);
@@ -87,23 +84,8 @@ export function Chat({ modelPath, setModelPath, modelName }: ChatProps) {
       token => {
         setMessages(existingMessages => {
           const newMessages = [...existingMessages];
-          const lastMessage = newMessages[0];
-          const { toggleThinking, content } = parser(
-            token,
-            lastMessage.content,
-            lastMessage.thinkingMsg,
-          );
-
-          if (toggleThinking) {
-            lastMessage.thinkingInProgress = !lastMessage.thinkingInProgress;
-          }
-
-          if (lastMessage.thinkingInProgress) {
-            lastMessage.thinkingMsg = lastMessage.thinkingMsg + content;
-          } else {
-            lastMessage.content = lastMessage.content + content;
-          }
-
+          newMessages[0] = parser(token, newMessages[0]);
+          console.log(newMessages);
           return newMessages;
         });
       },
@@ -134,7 +116,7 @@ export function Chat({ modelPath, setModelPath, modelName }: ChatProps) {
       <FlatList
         data={messages}
         renderItem={({ item }) => {
-          return <MessageRenderer {...item} />;
+          return <MessageRenderer message={item} />;
         }}
         style={styles.messagesContainer}
         inverted

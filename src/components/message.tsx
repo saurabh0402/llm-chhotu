@@ -3,12 +3,10 @@ import Markdown from 'react-native-marked';
 import { UserTheme } from 'react-native-marked/dist/typescript/theme/types';
 
 import { ThinkingMessage } from '.';
+import { Message } from '../types';
 
-type MessageProps = {
-  content: string;
-  sender: 'bot' | 'user';
-  thinkingInProgress: boolean;
-  thinkingMsg: string;
+export type RendererProps = {
+  message: Message;
 };
 
 const MARKDOWN_FLAT_LIST_PROPS = {
@@ -24,22 +22,9 @@ const MARKDOWN_THEME_MESSAGE: UserTheme = {
   },
 };
 
-const MARKDOWN_THEME_THINKING: UserTheme = {
-  colors: {
-    code: '#6399cf',
-    link: '#6399cf',
-    text: '#6399cf',
-    border: '#6399cf',
-  },
-};
-
-export function MessageRenderer({
-  content,
-  sender,
-  thinkingMsg,
-  thinkingInProgress,
-}: MessageProps) {
-  if (!content && !thinkingMsg) {
+export function MessageRenderer({ message }: RendererProps) {
+  const { sender, content } = message;
+  if (!content.length) {
     return null;
   }
 
@@ -48,7 +33,7 @@ export function MessageRenderer({
       <View style={styles.userMessageContainer}>
         <View style={styles.userMarkdownContainer}>
           <Markdown
-            value={content}
+            value={content[0].content}
             flatListProps={MARKDOWN_FLAT_LIST_PROPS}
             theme={MARKDOWN_THEME_MESSAGE}
           />
@@ -59,17 +44,28 @@ export function MessageRenderer({
 
   return (
     <View style={styles.botMessageContainer}>
-      {thinkingMsg && (
-        <ThinkingMessage
-          thinkingInProgress={thinkingInProgress}
-          thinkingMessage={thinkingMsg}
-        />
-      )}
-      <Markdown
-        value={content}
-        flatListProps={MARKDOWN_FLAT_LIST_PROPS}
-        theme={MARKDOWN_THEME_MESSAGE}
-      />
+      {[...content].reverse().map((singleText, i) => {
+        const { type, content, thinkingDone } = singleText;
+
+        if (type === 'reasoning') {
+          return (
+            <ThinkingMessage
+              thinkingInProgress={!thinkingDone}
+              thinkingMessage={content}
+              key={`${message}-${i}`}
+            />
+          );
+        } else {
+          return (
+            <Markdown
+              value={content}
+              flatListProps={MARKDOWN_FLAT_LIST_PROPS}
+              theme={MARKDOWN_THEME_MESSAGE}
+              key={`${message}-${i}`}
+            />
+          );
+        }
+      })}
     </View>
   );
 }

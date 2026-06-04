@@ -44,3 +44,9 @@ LLM Chhotu is your own LLM, running locally in your mobile phone - one you can t
 
 ## Gemma
 - [Function calling with Gemma](https://ai.google.dev/gemma/docs/capabilities/text/function-calling-gemma4)
+
+## Tools, Tools, Everywhere
+- [duckduckgo search](https://duck-duck-scrape.js.org/)
+- [searxng](https://docs.searxng.org/user/index.html)
+- [react-native linking](https://reactnative.dev/docs/linking)
+- [react-native common intents](https://github.com/wahdatjan/react-native-common-intents/blob/master/src/index.js)
