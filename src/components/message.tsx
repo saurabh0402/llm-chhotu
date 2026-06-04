@@ -2,7 +2,7 @@ import { StyleSheet, View, Text } from 'react-native';
 import Markdown from 'react-native-marked';
 import { UserTheme } from 'react-native-marked/dist/typescript/theme/types';
 
-import { ThinkingMessage } from '.';
+import { CollapsibleMessage } from '.';
 import { Message } from '../types';
 
 export type RendererProps = {
@@ -24,9 +24,6 @@ const MARKDOWN_THEME_MESSAGE: UserTheme = {
 
 export function MessageRenderer({ message }: RendererProps) {
   const { sender, content } = message;
-  if (!content.length) {
-    return null;
-  }
 
   if (sender === 'user') {
     return (
@@ -42,20 +39,33 @@ export function MessageRenderer({ message }: RendererProps) {
     );
   }
 
+  if (!content?.length) {
+    return (
+      <View style={styles.botMessageContainer}>
+        <Markdown
+          value="*Processing Request...*"
+          flatListProps={MARKDOWN_FLAT_LIST_PROPS}
+          theme={MARKDOWN_THEME_MESSAGE}
+        />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.botMessageContainer}>
       {[...content].reverse().map((singleText, i) => {
-        const { type, content, thinkingDone } = singleText;
+        const { type, content, done } = singleText;
 
         if (type === 'reasoning') {
           return (
-            <ThinkingMessage
-              thinkingInProgress={!thinkingDone}
-              thinkingMessage={content}
+            <CollapsibleMessage
+              inProgress={!done}
+              message={content}
               key={`${message}-${i}`}
+              title="🤔 Reasoning"
             />
           );
-        } else {
+        } else if (type === 'message') {
           return (
             <Markdown
               value={content}
@@ -64,7 +74,18 @@ export function MessageRenderer({ message }: RendererProps) {
               key={`${message}-${i}`}
             />
           );
+        } else if (type === 'parsedToolCall') {
+          return (
+            <CollapsibleMessage
+              inProgress={!done}
+              message={content}
+              key={`${message}-${i}`}
+              title="🛠️ Running Tool"
+            />
+          );
         }
+
+        return null;
       })}
     </View>
   );

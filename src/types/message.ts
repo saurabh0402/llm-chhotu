@@ -4,7 +4,7 @@ export type Message = {
 };
 
 export type Text = {
-  type: 'reasoning' | 'message';
+  type: 'reasoning' | 'message' | 'llmToolCall' | 'parsedToolCall';
   content: string;
-  thinkingDone?: boolean;
+  done?: boolean;
 };

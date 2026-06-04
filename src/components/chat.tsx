@@ -85,7 +85,6 @@ export function Chat({ modelPath, setModelPath, modelName }: ChatProps) {
         setMessages(existingMessages => {
           const newMessages = [...existingMessages];
           newMessages[0] = parser(token, newMessages[0]);
-          console.log(newMessages);
           return newMessages;
         });
       },

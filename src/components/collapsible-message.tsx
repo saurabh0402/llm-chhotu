@@ -5,9 +5,10 @@ import Markdown from 'react-native-marked';
 import { UserTheme } from 'react-native-marked/dist/typescript/theme/types';
 import { Circle } from 'react-native-progress';
 
-export type ThinkingMessageProps = {
-  thinkingMessage: string;
-  thinkingInProgress: boolean;
+export type CollapsibleMessageProps = {
+  message: string;
+  inProgress: boolean;
+  title?: string;
 };
 
 const MARKDOWN_FLAT_LIST_PROPS = {
@@ -23,10 +24,11 @@ const MARKDOWN_THEME_THINKING: UserTheme = {
   },
 };
 
-export function ThinkingMessage({
-  thinkingMessage,
-  thinkingInProgress,
-}: ThinkingMessageProps) {
+export function CollapsibleMessage({
+  message,
+  inProgress,
+  title = 'Reasoning',
+}: CollapsibleMessageProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
@@ -35,9 +37,9 @@ export function ThinkingMessage({
         <View style={styles.header}>
           <View style={styles.headerState}>
             <Text style={{ ...styles.headerText, marginRight: 10 }}>
-              Reasoning
+              {title}
             </Text>
-            {thinkingInProgress ? (
+            {inProgress ? (
               <Circle
                 indeterminate={true}
                 color="rgb(153, 153, 153)"
@@ -53,7 +55,7 @@ export function ThinkingMessage({
       </Pressable>
       <Collapsible isVisible={isCollapsed}>
         <Markdown
-          value={thinkingMessage}
+          value={message}
           flatListProps={MARKDOWN_FLAT_LIST_PROPS}
           theme={MARKDOWN_THEME_THINKING}
         />
@@ -68,6 +70,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgb(24, 51, 78)',
     padding: 10,
     borderRadius: 10,
+    marginTop: 10,
   },
   headerState: {
     flexDirection: 'row',

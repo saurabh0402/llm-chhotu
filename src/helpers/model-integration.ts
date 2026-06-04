@@ -83,7 +83,19 @@ export async function runCompletion(
 
     for (const toolCall of toolCalls) {
       const args = JSON.parse(toolCall.function.arguments);
+      onNextTokens(
+        `<|parsed_tool_call>***Tool***: ${
+          toolCall.function.name
+        }\n***Arguments***: ${JSON.stringify(
+          toolCall.function.arguments,
+          null,
+          2,
+        )}\n`,
+      );
       const toolResponse = await runTool(toolCall.function.name, args);
+      onNextTokens(
+        `***Response***: ${toolResponse.response}<parsed_tool_call|>`,
+      );
 
       toolRunResponses.tool_calls.push(toolCall);
       toolRunResponses.tool_responses.push({

@@ -31,16 +31,27 @@ function gemma4Parser(token: string, message: Message): Message {
   // the channel details come in different tokens and
   // not in a single one
 
+  if (!token) {
+    return message;
+  }
+
   const channelStartMsg = '<|channel>';
   const channelEndMsg = '<channel|>';
+  const toolCallStartMsg = '<|tool_call>';
+  const toolCallEndMsg = '<tool_call|>';
+  const parsedToolCallStartMsg = '<|parsed_tool_call>';
+  const parsedToolCallEndMsg = '<parsed_tool_call|>';
   const channelName = 'thought';
 
   const channelIndex = token.indexOf(channelStartMsg);
   const channelCloseIndex = token.indexOf(channelEndMsg);
+  const toolCallIndex = token.indexOf(toolCallStartMsg);
+  const toolCallEndIndex = token.indexOf(toolCallEndMsg);
+  const parsedToolCallIndex = token.indexOf(parsedToolCallStartMsg);
+  const parsedToolCallEndIndex = token.indexOf(parsedToolCallEndMsg);
 
   let stillThinking =
-    message.content[0]?.type === 'reasoning' &&
-    !message.content[0].thinkingDone;
+    message.content[0]?.type === 'reasoning' && !message.content[0].done;
 
   if (channelIndex !== -1) {
     const restOfMessage = token
@@ -50,7 +61,7 @@ function gemma4Parser(token: string, message: Message): Message {
     const newText: Text = {
       type: 'reasoning',
       content: '',
-      thinkingDone: false,
+      done: false,
     };
 
     const newMessage = {
@@ -64,20 +75,59 @@ function gemma4Parser(token: string, message: Message): Message {
       .slice(channelIndex + channelEndMsg.length + 1)
       .trim();
 
-    message.content[0].thinkingDone = true;
+    message.content[0].done = true;
     return gemma4Parser(restOfMessage, message);
   } else if (token.startsWith(channelName) && stillThinking) {
     const restOfMessage = token.slice(channelName.length + 1);
 
     message.content[0].content += restOfMessage;
     return message;
+  } else if (toolCallIndex !== -1) {
+    const newText: Text = {
+      type: 'llmToolCall',
+      content: '',
+      done: false,
+    };
+
+    return {
+      ...message,
+      content: [newText].concat(message.content),
+    };
+  } else if (toolCallEndIndex !== -1) {
+    const restOfMessage = token
+      .slice(toolCallEndIndex + toolCallEndMsg.length + 1)
+      .trim();
+
+    message.content[0].done = true;
+    return gemma4Parser(restOfMessage, message);
+  } else if (parsedToolCallIndex !== -1) {
+    const restOfMessage = token
+      .slice(parsedToolCallIndex + parsedToolCallStartMsg.length)
+      .trim();
+
+    const newText: Text = {
+      type: 'parsedToolCall',
+      content: restOfMessage,
+      done: false,
+    };
+
+    return {
+      ...message,
+      content: [newText].concat(message.content),
+    };
+  } else if (parsedToolCallEndIndex !== -1) {
+    const responseData = token.slice(0, parsedToolCallEndIndex);
+    message.content[0].content += responseData;
+    message.content[0].done = true;
+    return message;
   }
 
-  if (
-    message.content[0].type === 'reasoning' &&
-    !message.content[0].thinkingDone
-  ) {
+  if (message.content[0].type === 'reasoning' && !message.content[0].done) {
     message.content[0].content += token;
+    return message;
+  }
+
+  if (message.content[0].type === 'llmToolCall' && !message.content[0].done) {
     return message;
   }
 
