@@ -1,7 +1,8 @@
 import * as maths from './weather';
+import * as web from './web';
 import { AgentResponse } from './types';
 
-const toolDefs = maths.toolDefs;
+let toolDefs = web.toolDefs;
 
 export const tools = toolDefs.map(toolDef => ({
   ...toolDef,
@@ -32,7 +33,7 @@ export async function runTool(
     const response = await toolToRun.functionDef(args as unknown);
     return {
       success: true,
-      response: String(response),
+      response: JSON.stringify(response),
     };
   } catch (err) {
     return {

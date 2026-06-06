@@ -22,7 +22,7 @@ export function initModel(modelPath: string) {
   return initLlama({
     model: modelPath,
     use_mlock: true,
-    n_ctx: 2048,
+    n_ctx: 5096,
     n_gpu_layers: 99,
   });
 }
@@ -94,7 +94,7 @@ export async function runCompletion(
       );
       const toolResponse = await runTool(toolCall.function.name, args);
       onNextTokens(
-        `***Response***: ${toolResponse.response}<parsed_tool_call|>`,
+        `\n***Response***: ${toolResponse.response}<parsed_tool_call|>`,
       );
 
       toolRunResponses.tool_calls.push(toolCall);
