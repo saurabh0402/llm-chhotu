@@ -33,8 +33,7 @@ const SYSTEM_PROMPT = `
 
   - You also have some tools available for you. Whenever needed run a required tool to get the data.
   - If a tool is available for some usecase, IT MUST BE PREFERRED.
-  - Once you get a tool response, use it to generate the final output or more tool cools.
-  - When a tool call is made, you are provided the response with
+  - Once you get a tool response, use it to generate the final output or more tool calls.
 `;
 
 export async function runCompletion(
@@ -54,6 +53,8 @@ export async function runCompletion(
     },
   ];
 
+  let toolCallResponseProcessing = false;
+
   while (true) {
     const { tool_calls: toolCalls } = await model.completion(
       {
@@ -63,6 +64,11 @@ export async function runCompletion(
         tools,
       },
       data => {
+        if (toolCallResponseProcessing) {
+          toolCallResponseProcessing = false;
+          onNextTokens('<tool_call_response_processing|>');
+        }
+
         const { token } = data;
         onNextTokens(token);
       },
@@ -103,6 +109,9 @@ export async function runCompletion(
         response: toolResponse,
       });
     }
+
+    onNextTokens('<|tool_call_response_processing>');
+    toolCallResponseProcessing = true;
 
     messages.push({
       role: 'assistant',

@@ -9,6 +9,7 @@ export type CollapsibleMessageProps = {
   message: string;
   inProgress: boolean;
   title?: string;
+  isCollapsible?: boolean;
 };
 
 const MARKDOWN_FLAT_LIST_PROPS = {
@@ -28,12 +29,19 @@ export function CollapsibleMessage({
   message,
   inProgress,
   title = 'Reasoning',
+  isCollapsible = true,
 }: CollapsibleMessageProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={() => setIsCollapsed(collapsed => !collapsed)}>
+      <Pressable
+        onPress={
+          isCollapsible
+            ? () => setIsCollapsed(collapsed => !collapsed)
+            : undefined
+        }
+      >
         <View style={styles.header}>
           <View style={styles.headerState}>
             <Text style={{ ...styles.headerText, marginRight: 10 }}>
@@ -50,7 +58,9 @@ export function CollapsibleMessage({
               <Text style={styles.headerText}>✔</Text>
             )}
           </View>
-          <Text style={styles.headerText}>{isCollapsed ? '▼' : '▲'}</Text>
+          {isCollapsible ? (
+            <Text style={styles.headerText}>{isCollapsed ? '▼' : '▲'}</Text>
+          ) : null}
         </View>
       </Pressable>
       <Collapsible isVisible={isCollapsed}>
@@ -58,6 +68,11 @@ export function CollapsibleMessage({
           value={message}
           flatListProps={MARKDOWN_FLAT_LIST_PROPS}
           theme={MARKDOWN_THEME_THINKING}
+          styles={{
+            codespan: {
+              backgroundColor: 'rgba(0,0,0,0.5)',
+            },
+          }}
         />
       </Collapsible>
     </View>

@@ -41,6 +41,8 @@ function gemma4Parser(token: string, message: Message): Message {
   const toolCallEndMsg = '<tool_call|>';
   const parsedToolCallStartMsg = '<|parsed_tool_call>';
   const parsedToolCallEndMsg = '<parsed_tool_call|>';
+  const toolResponseProcessingStartMsg = '<|tool_call_response_processing>';
+  const toolResponseProcessingEndMsg = '<tool_call_response_processing|>';
   const channelName = 'thought';
 
   const channelIndex = token.indexOf(channelStartMsg);
@@ -49,6 +51,10 @@ function gemma4Parser(token: string, message: Message): Message {
   const toolCallEndIndex = token.indexOf(toolCallEndMsg);
   const parsedToolCallIndex = token.indexOf(parsedToolCallStartMsg);
   const parsedToolCallEndIndex = token.indexOf(parsedToolCallEndMsg);
+  const toolResponseStartIndex = token.indexOf(toolResponseProcessingStartMsg);
+  const toolResponseEndIndex = token.indexOf(toolResponseProcessingEndMsg);
+
+  console.log(token, toolResponseStartIndex, toolResponseEndIndex);
 
   let stillThinking =
     message.content[0]?.type === 'reasoning' && !message.content[0].done;
@@ -118,6 +124,20 @@ function gemma4Parser(token: string, message: Message): Message {
   } else if (parsedToolCallEndIndex !== -1) {
     const responseData = token.slice(0, parsedToolCallEndIndex);
     message.content[0].content += responseData;
+    message.content[0].done = true;
+    return message;
+  } else if (toolResponseStartIndex !== -1) {
+    const newText: Text = {
+      type: 'toolResponseProcessing',
+      content: '',
+      done: false,
+    };
+
+    return {
+      ...message,
+      content: [newText].concat(message.content),
+    };
+  } else if (toolResponseEndIndex !== -1) {
     message.content[0].done = true;
     return message;
   }

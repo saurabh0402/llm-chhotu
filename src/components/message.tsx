@@ -33,6 +33,11 @@ export function MessageRenderer({ message }: RendererProps) {
             value={content[0].content}
             flatListProps={MARKDOWN_FLAT_LIST_PROPS}
             theme={MARKDOWN_THEME_MESSAGE}
+            styles={{
+              codespan: {
+                backgroundColor: 'rgba(0,0,0,0.5)',
+              },
+            }}
           />
         </View>
       </View>
@@ -72,6 +77,11 @@ export function MessageRenderer({ message }: RendererProps) {
               flatListProps={MARKDOWN_FLAT_LIST_PROPS}
               theme={MARKDOWN_THEME_MESSAGE}
               key={`${message}-${i}`}
+              styles={{
+                codespan: {
+                  backgroundColor: 'rgba(0,0,0,0.5)',
+                },
+              }}
             />
           );
         } else if (type === 'parsedToolCall') {
@@ -81,6 +91,16 @@ export function MessageRenderer({ message }: RendererProps) {
               message={content}
               key={`${message}-${i}`}
               title="🛠️ Running Tool"
+            />
+          );
+        } else if (type === 'toolResponseProcessing') {
+          return (
+            <CollapsibleMessage
+              inProgress={!done}
+              message={content}
+              key={`${message}-${i}`}
+              title="🤖 Processing Tool Response"
+              isCollapsible={false}
             />
           );
         }

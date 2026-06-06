@@ -65,8 +65,6 @@ async function getSearchSummary(
   searchResult: SearchEngineResult,
   searchTerm: string,
 ): Promise<SearchWebResult> {
-  console.log('Getting search summary', searchResult);
-
   const urlData = searchResult.raw_content;
   const chunks = createChunks(urlData);
 
@@ -154,6 +152,9 @@ export const toolDefs: Array<ToolDefs> = [
       This allows you to search the internet for the given term thus allowing you to get the
       latest, real-time information from the internet. Use this, when you don't have some data
       and need to search the internet for the same.
+      The tool call returns multiple search results. Process the two results and return a nice,
+      parsed response. Do not summarise or talk about the search results. Find the correct data
+      from it and respond in your own words.
 
       Arguments:
         searchTerm (string): The search term to search for
